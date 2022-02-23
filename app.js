@@ -3,6 +3,8 @@
 const express = require("express");
 const app = express();
 
+app.use(express.static(__dirname + "/public"));
+
 // db 
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('./db store.db');
@@ -10,21 +12,29 @@ var db = new sqlite3.Database('./db store.db');
 // ejs
 app.set("view engine","ejs");
 
-
+let users;
 // Select all users 
  db.serialize(()=> {
  	db.all("SELECT * from usersdb",function(err,rows){
-		if(err){ console.log(err);
-		} else{ console.log(rows); }
+		if (err) { 
+      console.log(err);
+		} else { 
+      console.log(rows); 
+      users = rows;
+    }
  	});
  });
 
 // select all books
  db.serialize(()=> {
-    db.all("SELECT * from booksdb",function(err,rows){
-       if(err){ console.log(err);
-       } else{ console.log(rows); }
-    });
+  db.all("SELECT * from booksdb",function(err,rows){
+    if(err) { 
+      console.log(err);
+    } else { 
+      console.log(rows); 
+      rows;
+    }
+  });
 });
 
 app.get("/", (req,res) => {
@@ -37,7 +47,9 @@ app.get("/index", (req,res) => {
 
 
 app.get("/login", (req,res) => {
-    res.sendFile(__dirname+ "/login.html");
+    // res.sendFile(__dirname+ "/login.html");
+    console.log("fff", users);
+    res.render("login", { users: users });
 });
 
 

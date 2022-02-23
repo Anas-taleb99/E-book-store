@@ -1,0 +1,184 @@
+:root {
+  --main-color: #2E8B57;
+  --second-color: rgba(0, 0, 0, 0.8);
+  --bg-color: #eceffc
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  height: 2000px;
+}
+
+/* start  global classes  */
+.main-color {
+  background-color: var(--main-color);
+}
+
+input:focus {
+  border-color: var(--main-color)
+}
+
+.relative {
+  position: relative;
+}
+
+input.form-control:focus {
+  border-color: var(--main-color);
+  box-shadow: 0 0.4px 0.4px rgba(46, 139, 87, 0.109),
+  0 1px 1px rgba(46, 139, 87, 0.155),
+  0 2.1px 2.1px rgba(46, 139, 87, 0.195),
+  0 4.4px 4.4px rgba(46, 139, 87, 0.241),
+  0 12px 12px rgba(46, 139, 87, 0.35);;
+}
+
+.btn-primary {
+  border-color: var(--main-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--main-color);
+}
+
+.custom-btn {
+  border: unset;
+  position: relative;
+  overflow: hidden;
+}
+
+.custom-btn:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  top: 100%;
+  right: 100%;
+  display: block;
+  border-radius: 0 12px 0 0;
+  background-color: rgba(255, 255, 255, 0.247);  
+  transition: all 0.25s ease-in-out;
+}
+
+.custom-btn:hover:before {
+  top: 0;
+  right: -10px;
+}
+
+.active {
+  color: var(--main-color);
+}
+
+.navbar-light .navbar-nav .active > .nav-link {
+  color: var(--main-color);
+}
+
+.flex {
+  display: flex;
+}
+
+.space-evenly {
+  justify-content: space-evenly;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.gp-10 {
+  gap: 0px 10px
+}
+
+/* end global classes  */
+
+.login-holder {
+  width: 100%;
+  height: 100vh;
+  background-color: var(--bg-color);
+  display: grid;
+  place-items: center;
+}
+
+.login-holder .login-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 400px;
+  background-color: var(--second-color);
+  box-shadow: 0 0.4px 0.4px rgba(128, 128, 128, 0.109),
+  0 1px 1px rgba(128, 128, 128, 0.155),
+  0 2.1px 2.1px rgba(128, 128, 128, 0.195),
+  0 4.4px 4.4px rgba(128, 128, 128, 0.241),
+  0 12px 12px rgba(128, 128, 128, 0.35);
+  padding: 10px 30px;
+  color: #fff;
+  min-height: 469px;
+  border-radius: 8px;
+}
+
+.login-form > h1 {
+  text-align: center;
+}
+
+/* start book card  */
+.book-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: #1212125e;
+  color: #dfdfdf;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+/* end book card  */
+
+/* start header  */
+header {
+  height: calc(100vh - 56px);
+  background-image: url("./imgs/test.jpg");
+  background-size: cover;
+  position: relative;
+}
+
+.layout {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #0000009e;
+}
+header .content {
+  height: calc(100vh - 56px);
+  color: #fff;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+header button {
+  background-color: transparent;
+  color: var(--main-color);
+  border: 2px solid var(--main-color);
+  font-size: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  transition: all .2s ease-in-out;
+  padding: 4px 10px;
+}
+
+header button:hover {
+  background-color: var(--main-color);
+  color: #fff;
+}
+
+header button:before {
+  content: "";
+
+}
+/* end header  */
