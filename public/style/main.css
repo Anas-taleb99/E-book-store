@@ -1,3 +1,5 @@
+@import url('../../node_modules/font-awesome/css/font-awesome.min.css');
+
 :root {
   --main-color: #2E8B57;
   --second-color: rgba(0, 0, 0, 0.8);
@@ -137,7 +139,7 @@ input.form-control:focus {
 /* start header  */
 header {
   height: calc(100vh - 56px);
-  background-image: url("./imgs/test.jpg");
+  background-image: url("/img/test.jpg");
   background-size: cover;
   position: relative;
 }
