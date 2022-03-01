@@ -3,7 +3,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-
+global.myuser;
 // serving my static file
 app.use(express.static(__dirname + "/public"));
 
@@ -43,13 +43,14 @@ let users;
       console.log(err);
     } else { 
       // console.log(rows); 
-      rows;
+      books =rows;
     }
   });
 });
 
 app.get("/", (req,res) => {
-    res.render("home");
+    res.render("home",{books});
+    
 });
 
 app.get("/index", (req,res) => {
@@ -67,8 +68,12 @@ app.post("/login", (req, res) => {
   users.forEach(user => {
     if (
       user.Username === req.body.username &&
-      user.Password === req.body.password
+      user.Password === req.body.password 
+      
+      
     ) {
+      console.log("rule is ",user.Rule)
+      myuser =user.Rule;
       res.redirect("/");
     }
   })
