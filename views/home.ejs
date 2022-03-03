@@ -45,9 +45,18 @@
             <a class="nav-link disabled">Disabled</a>
           </li>
         </ul>
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
+        
+        
+        <!-- <form role="form" action="naskah_form/search" method="get">
+          <input type='text' name='titlesearch' id='q' placeholder='Enter a keyword...' required autocomplete='off'>
+          <input type='submit' value='Search' id='submit'>
+  </form> -->
+
+
+
+        <form role="form" action="/search" method="post" class="d-flex">
+          <input class="form-control me-2" type='text' name='titlesearch' id='q' placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit" value='Search' id='submit'>Search</button>
         </form>
       </div>
     </div>
@@ -59,12 +68,13 @@
     <div class="layout"></div>
     <div class="container">
       <div class="content">
-      <% if (myuser===0){ %>
-        <p>Welcome user</p>
+      <% if (typeof myuser != "undefined") { %>
+        <% if (myuser===0){ %>
+          <p>Welcome user</p>
         <% } else { %>
-        <p>Welcome admin</p>
+          <p>Welcome admin</p>
         <% } %>
-        
+      <%}%>
         <h2>Welcome ! <i class='fas fa-bell' style='font-size:24px'></i> </h2>
         <p> Trarara it's the one and only book with the author name snoop dogg</p>
         <span class="material-icons">face</span>
@@ -77,7 +87,7 @@
     <h3 class="mt-4">Our books!</h3>
     <div class="flex flex-wrap space-evenly gp-10">
       <!-- books views -->
-      <% for(var i=0; i<books.length; i++) {%>
+      <% for(let i=0; i<books.length; i++) {%>
       <div class="card relative mt-2" style="width: 18rem;">
         <img src="/img/book1.png" alt="book-name" />
         <div class="book-content">
@@ -101,5 +111,10 @@
   </script>
 </body>
 </html>
+
+
+
+
+
 
 

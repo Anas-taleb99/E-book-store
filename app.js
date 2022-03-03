@@ -3,7 +3,6 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-global.myuser;
 // serving my static file
 app.use(express.static(__dirname + "/public"));
 
@@ -18,11 +17,11 @@ app.use(express.urlencoded({ extended: false }));
 // db 
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('./db_store.db');
-
 // ejs
 app.set("view engine","ejs");
 
-let users;
+let myuser;
+let users = [];
 
 // Select all users 
  db.serialize(()=> {
@@ -36,7 +35,7 @@ let users;
  	});
  });
 
-// select all books
+// //select all books
  db.serialize(()=> {
   db.all("SELECT * from booksdb",function(err,rows){
     if(err) { 
@@ -48,10 +47,56 @@ let users;
   });
 });
 
-app.get("/", (req,res) => {
-    res.render("home",{books});
-    
+
+
+app.post('/search', async (req,res)=> {
+  let newBooks = [];
+  await new Promise((resolve, reject) => {
+    db.all(`SELECT * FROM booksdb where Book_title LIKE '${req.body.titlesearch}%' `, function(err,rows){
+      if(err) { 
+        console.log(err);
+      } else { 
+        newBooks = rows;
+        console.log("skrrrr", rows);
+        resolve(rows);
+      }
+    });
+  });
+
+  res.render("home", { books: newBooks, myuser })
 });
+
+
+
+app.get("/", (req,res) => {
+  //select all books
+ db.serialize(()=> {
+    db.all("SELECT * from booksdb",function(err,rows){
+      if(err) { 
+        console.log(err);
+      } else { 
+        // console.log(rows); 
+        books =rows;
+      }
+    });
+  });
+
+  res.render("home",{books, myuser});
+});
+
+// app.post('/', (req,res)=>{
+//   let sql = "SELECT * FROM upload_test where title LIKE '% "+ 
+//        req.body.titlesearch + "%'"
+//   conn.query(sql, (err,results)=>{
+//   if (err) throw err
+//   res.json(console.log(sql))
+      
+//   })
+// })
+
+
+
+
 
 app.get("/index", (req,res) => {
     res.sendFile(__dirname+ "/index.html");
@@ -64,16 +109,14 @@ app.get("/login", (req,res) => {
 });
 
 app.post("/login", (req, res) => {
-  console.log("here", req.body);
+
   users.forEach(user => {
     if (
       user.Username === req.body.username &&
-      user.Password === req.body.password 
-      
-      
+      user.Password === req.body.password       
     ) {
       console.log("rule is ",user.Rule)
-      myuser =user.Rule;
+      myuser = user.Rule;
       res.redirect("/");
     }
   })
