@@ -58,14 +58,35 @@
             <% } else if (myuser.Rule == 0) { %> 
               <button type="button" class="btn btn-secondary">Buy</button>
             <% } else { %>
-              <button type="button" class="btn btn-danger">Danger</button>
+              <button 
+                type="button" 
+                class="delete btn btn-danger" 
+                data-delete-id="<%=books[i].bookid%>"
+                data-delete-name="<%=books[i].Book_title%>"
+              >
+                Danger
+              </button>
             <% } %>
           </div>
         </div>
       <% } %>
     </div>
   </div>
-  
+  <div class="popup">
+    <div class="pupup-section">
+      <h5>Are you sure you wnat to delete this book <span id="book-name">fff</span></h5>
+      <div class="popup-btn d-flex">
+        <button class="btn btn-sec cancel-popup">
+          cancel
+        </button>
+        <button class="btn btn-danger delete-event">
+          delete
+        </button>
+      </div>
+    </div>
+  </div>
   <script src="./js/bootstrap.bundle.min.js"></script>
+
+  <script src="/javascript/home.js"></script>
 </body>
 </html>

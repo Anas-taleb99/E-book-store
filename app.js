@@ -15,6 +15,7 @@ app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist
 app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')))
 app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')))
 app.use('/font', express.static(path.join(__dirname, 'node_modules/bootstrap-icons/font')))
+app.use("/javascript", express.static(path.join(__dirname, "public", "javascript")))
 
 // append data in request body
 app.use(express.urlencoded({ extended: false }));
@@ -27,6 +28,16 @@ app.set("view engine","ejs");
 
 let myuser;
 let users = [];
+
+const restricTo = (...roles) => {
+  if (!myuser)
+    return false;
+
+  if (!roles.includes(myuser.Rule))
+    return false;
+  
+  return true
+}
 
 app.post('/search', async (req,res)=> {
   let newBooks = [];
@@ -54,7 +65,6 @@ app.get("/", async (req,res) => {
         console.log(err);
       } else { 
         books = rows;
-        console.log("skrrrr", rows);
         resolve(rows);
       }
     });
@@ -74,18 +84,17 @@ app.get("/login", (req,res) => {
 });
 
 app.post("/login", async (req, res) => {
-  console.log('here')
   // Select all users 
+  myuser = null
   try {
     await new Promise((resolve, reject) => {
-      db.each(
+      db.get(
         `SELECT * from usersdb WHERE Username ='${req.body.username}' and Password ='${req.body.password}' `,
         function(err, user){
           if(err) { 
-            console.log(err);
-          } else { 
+            reject("broo")
+          } else {     
             myuser = user;
-            console.log(user)
             resolve(user);
           }
         }
@@ -94,14 +103,15 @@ app.post("/login", async (req, res) => {
   } catch(e) {
     console.log(e);
   }
-
-  if (!myuser) 
-    res.redirect("/login");
   
+  if (!myuser) res.redirect("/login")
+
   res.redirect("/")
 })
 
 app.get("/addbook", (req, res) => {
+  if (! restricTo(1, 2, 3))
+    return res.redirect("/");
   res.render("addBook")
 })
 
@@ -132,10 +142,10 @@ app.get("/edit/:id", async (req, res) => {
 })
 
 app.post("/edit/:id", async (req, res) => {
-  // UPDATE table_name SET column1 = value1, column2 = value2, ... WHERE condition; 
-  // `INSERT INTO booksdb (Book_title, author, publisher, year_of_publication, price, url) 
-  //       VALUES ('${req.body.title}', '${req.body.author}', '${req.body.publisher}', '${req.body.date}', '${req.body.price}', '${localPath.split("public")[1]}')`
-  console.log("hereoooooooooooooo", req.params.id)
+
+  if (! restricTo(1, 2, 3))
+    return res.redirect("/");
+
   const sql = `UPDATE booksdb SET 
     Book_title = '${req.body.title}', 
     author = '${req.body.author}', 
@@ -143,7 +153,7 @@ app.post("/edit/:id", async (req, res) => {
     price = '${req.body.price}'
     WHERE bookid = '${req.params.id}'
   `;
-  
+
   try {
     await new Promise((resolve, reject) => {
       db.run(sql);
@@ -151,12 +161,31 @@ app.post("/edit/:id", async (req, res) => {
       resolve("Done");
     })
   } catch(e) {
-    console.log(...e);
+    console.log(e);
+  }
+  res.redirect("/")
+})
+
+app.get("/delete/:id", async (req, res) => {
+
+  // if user doesn't have permistion to access this link redirect him
+  if (! restricTo(1, 2, 3))
+    return res.redirect("/");
+
+  const sql = `DELETE FROM booksdb WHERE bookid = '${req.params.id}'`;
+  try {
+    await new Promise((resolve, reject) => {
+      db.run(sql);
+      resolve("Done");
+    })
+  } catch(e) {
+    console.log(e);
   }
   res.redirect("/")
 })
 
 app.get("/signup", (req, res) => {
+
   res.render("signup")
 })
 
