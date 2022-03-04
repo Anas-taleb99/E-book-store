@@ -53,6 +53,7 @@ app.post('/search', async (req,res)=> {
         } else { 
           newBooks = rows;
           resolve(rows);
+         
         }
       });
   });
@@ -79,8 +80,24 @@ app.get("/", async (req,res) => {
     myuser = {
       Username: "Guest",
       Rule: 0
+
     }
   }
+  console.log( `SELECT
+              salesdb.purchaseid AS pur_id,
+                salesdb.userid , 
+                salesdb.bookid , 
+                salesdb.date_of_purchase AS date, 
+                usersdb.Username AS user_name, 
+                booksdb.Book_title AS book_name, 
+                booksdb.author,
+                booksdb.publisher,
+                booksdb.price,
+              
+              FROM 
+               salesdb
+               LEFT JOIN booksdb ON salesdb.bookid = booksdb.bookid
+               LEFT JOIN usersdb ON salesdb.userid = usersdb.userid`)
   res.render("home",{books, myuser});
 });
 
@@ -100,6 +117,7 @@ app.post("/login", async (req, res) => {
             reject("broo")
           } else {     
             myuser = user;
+            
             resolve(user);
           }
         }
