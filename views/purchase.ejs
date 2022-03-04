@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>purchase tabel </title>
+
+</head>
+<body>
+
+    <% for(let i=0; i<5; i++) {%>
+        
+           <%=mypurchase[i].purchase_id	%>
+           <%=mypurchase[i].userid%>
+            <%=mypurchase[i].bookid%>
+            <%=mypurchase[i].date%> 
+           <%=mypurchase[i].user_name%>
+           <%=mypurchase[i].book_name%>
+           <%=mypurchase[i].author%>
+           <%=mypurchase[i].publisher%>
+           <%=mypurchase[i].price%>
+        <% } %>
+     
+</body>
+</html>

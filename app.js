@@ -27,6 +27,7 @@ var db = new sqlite3.Database('./db_store.db');
 app.set("view engine","ejs");
 
 let myuser;
+let mypurchase;
 let users = [];
 
 const restricTo = (...roles) => {
@@ -75,6 +76,33 @@ app.get("/", async (req,res) => {
       }
     });
   });
+  
+
+  
+
+  db.serialize(()=> {
+    db.all(`SELECT
+    salesdb.purchaseid AS purchase_id,
+      salesdb.userid , 
+      booksdb.bookid , 
+      salesdb.date_of_purchase AS date, 
+      usersdb.Username AS user_name, 
+      booksdb.Book_title AS book_name, 
+      booksdb.author,
+      booksdb.publisher,
+      booksdb.price
+    FROM salesdb
+     LEFT JOIN booksdb ON salesdb.bookid = booksdb.bookid
+     LEFT JOIN usersdb ON salesdb.userid = usersdb.userid`,function(err,rows){
+      if(err) { 
+        console.log(err);
+      } else { 
+        // console.log(rows); 
+        mypurchase =rows;
+      }
+    });
+  });
+  
 
   if (!myuser) {
     myuser = {
@@ -83,26 +111,18 @@ app.get("/", async (req,res) => {
 
     }
   }
-  console.log( `SELECT
-              salesdb.purchaseid AS pur_id,
-                salesdb.userid , 
-                salesdb.bookid , 
-                salesdb.date_of_purchase AS date, 
-                usersdb.Username AS user_name, 
-                booksdb.Book_title AS book_name, 
-                booksdb.author,
-                booksdb.publisher,
-                booksdb.price,
-              
-              FROM 
-               salesdb
-               LEFT JOIN booksdb ON salesdb.bookid = booksdb.bookid
-               LEFT JOIN usersdb ON salesdb.userid = usersdb.userid`)
+   
   res.render("home",{books, myuser});
+  
 });
 
 app.get("/login", (req,res) => {
   res.render("login");
+});
+
+
+app.get("/purchase", (req,res) => {
+  res.render("purchase",{mypurchase });
 });
 
 app.post("/login", async (req, res) => {
