@@ -36,7 +36,6 @@ app.post('/search', async (req,res)=> {
         console.log(err);
       } else { 
         newBooks = rows;
-        console.log("skrrrr", rows);
         resolve(rows);
       }
     });
@@ -106,14 +105,56 @@ app.get("/addbook", (req, res) => {
   res.render("addBook")
 })
 
-
-
 app.post("/addbook", factory.uploadImg, factory.uploadHandler);
 
-// app.post('/addbook', (req, res) => {
-//   console.log(req.body.imgUrl);
-//   res.redirect("/addbook")
-// })
+app.get("/edit/:id", async (req, res) => {
+  console.log("here")
+  let editBook;
+  try {
+    await new Promise((resolve, reject) => {
+      db.each(
+        `SELECT * from booksdb WHERE bookid ='${req.params.id}'`,
+        function(err, book){
+          if(err) { 
+            console.log(err);
+          } else { 
+            editBook = book;
+            console.log(book)
+            resolve(book);
+          }
+        }
+      );
+    });
+  } catch(e) {
+    console.log(e);
+  }
+  res.render("editBook", { book: editBook });
+})
+
+app.post("/edit/:id", async (req, res) => {
+  // UPDATE table_name SET column1 = value1, column2 = value2, ... WHERE condition; 
+  // `INSERT INTO booksdb (Book_title, author, publisher, year_of_publication, price, url) 
+  //       VALUES ('${req.body.title}', '${req.body.author}', '${req.body.publisher}', '${req.body.date}', '${req.body.price}', '${localPath.split("public")[1]}')`
+  console.log("hereoooooooooooooo", req.params.id)
+  const sql = `UPDATE booksdb SET 
+    Book_title = '${req.body.title}', 
+    author = '${req.body.author}', 
+    year_of_publication = '${req.body.date}', 
+    price = '${req.body.price}'
+    WHERE bookid = '${req.params.id}'
+  `;
+  
+  try {
+    await new Promise((resolve, reject) => {
+      db.run(sql);
+      console.log("sqlfff")
+      resolve("Done");
+    })
+  } catch(e) {
+    console.log(...e);
+  }
+  res.redirect("/")
+})
 
 app.get("/signup", (req, res) => {
   res.render("signup")
