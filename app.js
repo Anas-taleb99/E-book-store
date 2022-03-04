@@ -41,15 +41,20 @@ const restricTo = (...roles) => {
 
 app.post('/search', async (req,res)=> {
   let newBooks = [];
+  const { titlesearch } = req.body;
+
   await new Promise((resolve, reject) => {
-    db.all(`SELECT * FROM booksdb where Book_title LIKE '${req.body.titlesearch}%' `, function(err,rows){
-      if(err) { 
-        console.log(err);
-      } else { 
-        newBooks = rows;
-        resolve(rows);
-      }
-    });
+    //SELECT title FROM pages WHERE my_col LIKE %$param1% OR another_col LIKE %$param2%;
+    db.all(
+      `SELECT * FROM booksdb where Book_title LIKE '${titlesearch}%' OR author LIKE '${titlesearch}%' OR publisher LIKE '${titlesearch}%'`, 
+      function(err,rows){
+        if(err) { 
+          console.log(err);
+        } else { 
+          newBooks = rows;
+          resolve(rows);
+        }
+      });
   });
 
   res.render("home", { books: newBooks, myuser })
@@ -112,7 +117,7 @@ app.post("/login", async (req, res) => {
 app.get("/addbook", (req, res) => {
   if (! restricTo(1, 2, 3))
     return res.redirect("/");
-  res.render("addBook")
+  res.render("addBook", {myuser})
 })
 
 app.post("/addbook", factory.uploadImg, factory.uploadHandler);
@@ -138,7 +143,7 @@ app.get("/edit/:id", async (req, res) => {
   } catch(e) {
     console.log(e);
   }
-  res.render("editBook", { book: editBook });
+  res.render("editBook", { book: editBook, myuser });
 })
 
 app.post("/edit/:id", async (req, res) => {
