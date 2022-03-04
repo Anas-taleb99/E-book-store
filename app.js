@@ -3,6 +3,10 @@
 const express = require("express");
 const app = express();
 const path = require("path");
+
+// controllers
+const factory = require("./controllers/handleFactory");
+
 // serving my static file
 app.use(express.static(__dirname + "/public"));
 
@@ -10,6 +14,7 @@ app.use(express.static(__dirname + "/public"));
 app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')))
 app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')))
 app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')))
+app.use('/font', express.static(path.join(__dirname, 'node_modules/bootstrap-icons/font')))
 
 // append data in request body
 app.use(express.urlencoded({ extended: false }));
@@ -22,32 +27,6 @@ app.set("view engine","ejs");
 
 let myuser;
 let users = [];
-
-// Select all users 
- db.serialize(()=> {
- 	db.all("SELECT * from usersdb",function(err,rows){
-		if (err) { 
-      console.log(err);
-		} else { 
-      // console.log(rows); 
-      users = rows;
-    }
- 	});
- });
-
-// //select all books
- db.serialize(()=> {
-  db.all("SELECT * from booksdb",function(err,rows){
-    if(err) { 
-      console.log(err);
-    } else { 
-      // console.log(rows); 
-      books =rows;
-    }
-  });
-});
-
-
 
 app.post('/search', async (req,res)=> {
   let newBooks = [];
@@ -68,68 +47,78 @@ app.post('/search', async (req,res)=> {
 
 
 
-app.get("/", (req,res) => {
+app.get("/", async (req,res) => {
   //select all books
- db.serialize(()=> {
-    db.all("SELECT * from booksdb",function(err,rows){
+  await new Promise((resolve, reject) => {
+    db.all(`SELECT * from booksdb `, function(err,rows){
       if(err) { 
         console.log(err);
       } else { 
-        // console.log(rows); 
-        books =rows;
+        books = rows;
+        console.log("skrrrr", rows);
+        resolve(rows);
       }
     });
   });
 
+  if (!myuser) {
+    myuser = {
+      Username: "Guest",
+      Rule: 0
+    }
+  }
   res.render("home",{books, myuser});
 });
 
-// app.post('/', (req,res)=>{
-//   let sql = "SELECT * FROM upload_test where title LIKE '% "+ 
-//        req.body.titlesearch + "%'"
-//   conn.query(sql, (err,results)=>{
-//   if (err) throw err
-//   res.json(console.log(sql))
-      
-//   })
-// })
-
-
-
-
-
-app.get("/index", (req,res) => {
-    res.sendFile(__dirname+ "/index.html");
-});
-
-
 app.get("/login", (req,res) => {
-  // res.sendFile(__dirname+ "/login.html");
   res.render("login");
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
+  console.log('here')
+  // Select all users 
+  try {
+    await new Promise((resolve, reject) => {
+      db.each(
+        `SELECT * from usersdb WHERE Username ='${req.body.username}' and Password ='${req.body.password}' `,
+        function(err, user){
+          if(err) { 
+            console.log(err);
+          } else { 
+            myuser = user;
+            console.log(user)
+            resolve(user);
+          }
+        }
+      );
+    });
+  } catch(e) {
+    console.log(e);
+  }
 
-  users.forEach(user => {
-    if (
-      user.Username === req.body.username &&
-      user.Password === req.body.password       
-    ) {
-      console.log("rule is ",user.Rule)
-      myuser = user.Rule;
-      res.redirect("/");
-    }
-  })
-  res.redirect("/login");
+  if (!myuser) 
+    res.redirect("/login");
+  
+  res.redirect("/")
 })
+
+app.get("/addbook", (req, res) => {
+  res.render("addBook")
+})
+
+
+
+app.post("/addbook", factory.uploadImg, factory.uploadHandler);
+
+// app.post('/addbook', (req, res) => {
+//   console.log(req.body.imgUrl);
+//   res.redirect("/addbook")
+// })
 
 app.get("/signup", (req, res) => {
   res.render("signup")
 })
 
-app.get("/manager", (req,res) => {
-    res.sendFile(__dirname+ "/manager.html");
-});
 
 app.listen(3000, () => {
     console.log("Node is running at port : 3000");

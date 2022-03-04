@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add books</title>
+  <%- include('./style') %>
+
+</head>
+<body>
+  <%- include('./nav') %>
+  <div class="container mt-4">
+    <form method="post" enctype="multipart/form-data" action="/addbook">
+      <h2>Add Book</h2>
+      <div class="row">
+        <div class="col-md-6 mb-2">
+          <div class="form-group">
+            <label for="first">Book name</label>
+            <input type="text" class="form-control" placeholder="" id="first" name="title">
+          </div>
+        </div>
+        <!--  col-md-6   -->
+  
+        <div class="col-md-6 mb-2">
+          <div class="form-group">
+            <label for="last">Book Author</label>
+            <input type="text" class="form-control" placeholder="" id="last" name="author">
+          </div>
+        </div>
+        <!--  col-md-6   -->
+      </div>
+  
+  
+      <div class="row">
+        <div class="col-md-6 mb-2">
+          <div class="form-group">
+            <label for="company">Publisher</label>
+            <input type="text" class="form-control" placeholder="" id="company" name="publisher">
+          </div>
+        </div>
+        <!--  col-md-6   -->
+  
+        <div class="col-md-6 mb-2">
+  
+          <div class="form-group">
+            <label for="phone">Price</label>
+            <input type="number" class="form-control" id="phone" placeholder="Price" min="0" name="price">
+          </div>
+        </div>
+        <div class="col-md-6 mb-2">
+  
+          <div class="form-group">
+            <label for="phone">Quantity</label>
+            <input type="number" class="form-control" id="phone" min="1" name="quantity">
+          </div>
+        </div>
+        <div class="col-md-6 mb-2">
+  
+          <div class="form-group">
+            <label for="phone">Quantity</label>
+            <input type="date" class="form-control" id="phone" min="1" name="date">
+          </div>
+        </div>
+        
+        <!--  col-md-6   -->
+      </div>
+      <div class="col-md-6 mb-2">
+          <div class="form-group">
+            <label for="formFile" class="form-label">Book cover</label>
+            <input class="form-control" type="file" id="formFile" accept="image/*" name="imgUrl" />
+          </div>
+        </div>
+      <!--  row   -->
+      <button type="submit" class="btn btn-main mt-4">Submit</button>
+    </form>
+  </div>
+</body>
+</html>
