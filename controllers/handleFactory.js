@@ -22,7 +22,7 @@ exports.uploadHandler = (req, res) => {
   const tempPath = req.file.path;
   const targetPath = path.join(__dirname, "../", "public", "img", `cover-${Date.now()}.png`);
 
-  if (path.extname(req.file.originalname).toLowerCase() === ".png") {
+  if (req.file.mimetype.split("/")[0] === "image") {
 
     fs.rename(tempPath, targetPath, async err => {
     
@@ -52,7 +52,7 @@ exports.uploadHandler = (req, res) => {
       res
         .status(403)
         .contentType("text/plain")
-        .end("Only .png files are allowed!");
+        .end("Only Images are allowed!");
     });
   }
 }

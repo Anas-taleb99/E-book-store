@@ -75,34 +75,7 @@ app.get("/", async (req,res) => {
         resolve(rows);
       }
     });
-  });
-  
-
-  
-
-  db.serialize(()=> {
-    db.all(`SELECT
-    salesdb.purchaseid AS purchase_id,
-      salesdb.userid , 
-      booksdb.bookid , 
-      salesdb.date_of_purchase AS date, 
-      usersdb.Username AS user_name, 
-      booksdb.Book_title AS book_name, 
-      booksdb.author,
-      booksdb.publisher,
-      booksdb.price
-    FROM salesdb
-     LEFT JOIN booksdb ON salesdb.bookid = booksdb.bookid
-     LEFT JOIN usersdb ON salesdb.userid = usersdb.userid`,function(err,rows){
-      if(err) { 
-        console.log(err);
-      } else { 
-        // console.log(rows); 
-        mypurchase =rows;
-      }
-    });
-  });
-  
+  });  
 
   if (!myuser) {
     myuser = {
@@ -121,8 +94,33 @@ app.get("/login", (req,res) => {
 });
 
 
-app.get("/purchase", (req,res) => {
-  res.render("purchase",{mypurchase });
+app.get("/purchase", async (req,res) => {
+
+  mypurchase = await new Promise((resolve, reject) => {
+    db.serialize(()=> {
+      db.all(`SELECT
+      salesdb.purchaseid AS purchase_id,
+        salesdb.userid , 
+        booksdb.bookid , 
+        salesdb.date_of_purchase AS date, 
+        usersdb.Username AS user_name, 
+        booksdb.Book_title AS book_name, 
+        booksdb.author,
+        booksdb.publisher,
+        booksdb.price
+      FROM salesdb
+      LEFT JOIN booksdb ON salesdb.bookid = booksdb.bookid
+      LEFT JOIN usersdb ON salesdb.userid = usersdb.userid`,function(err,rows){
+        if(err) { 
+          console.log(err);
+        } else { 
+          resolve(rows);
+        }
+      });
+    });
+  })
+
+  res.render("purchase",{ mypurchase, myuser });
 });
 
 app.post("/login", async (req, res) => {
@@ -161,7 +159,6 @@ app.get("/addbook", (req, res) => {
 app.post("/addbook", factory.uploadImg, factory.uploadHandler);
 
 app.get("/edit/:id", async (req, res) => {
-  console.log("here")
   let editBook;
   try {
     await new Promise((resolve, reject) => {
@@ -200,7 +197,6 @@ app.post("/edit/:id", async (req, res) => {
   try {
     await new Promise((resolve, reject) => {
       db.run(sql);
-      console.log("sqlfff")
       resolve("Done");
     })
   } catch(e) {
@@ -225,6 +221,26 @@ app.get("/delete/:id", async (req, res) => {
     console.log(e);
   }
   res.redirect("/")
+})
+
+app.get("/buy/:userid/:bookid", async (req, res) => {
+
+  const { userid, bookid } = req.params;
+
+  const date = new Date().toISOString().split('T')[0];
+
+  const sql = `INSERT INTO salesdb (userid, bookid, date_of_purchase)
+  VALUES ('${userid}', '${bookid}', '${date}')`;
+
+  try {
+    await new Promise((reslove, reject) => {
+      db.run(sql);
+      reslove("Done");
+    })
+  } catch (e) {
+    console.log(e);
+  }
+  res.redirect("/");
 })
 
 app.get("/signup", (req, res) => {
