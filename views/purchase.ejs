@@ -1,24 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>purchase tabel </title>
-
+  <meta charset="UTF-8">
+  <title>purchase tabel </title>
+  <%- include('style') %>
 </head>
 <body>
-
-    <% for(let i=0; i<5; i++) {%>
-        
-           <%=mypurchase[i].purchase_id	%>
-           <%=mypurchase[i].userid%>
-            <%=mypurchase[i].bookid%>
-            <%=mypurchase[i].date%> 
-           <%=mypurchase[i].user_name%>
-           <%=mypurchase[i].book_name%>
-           <%=mypurchase[i].author%>
-           <%=mypurchase[i].publisher%>
-           <%=mypurchase[i].price%>
-        <% } %>
-     
+  <%- include('./nav') %>
+  <table class="table table-striped table-dark">
+    <thead>
+      <tr>
+        <th scope="col">Username</th>
+        <th scope="col">Book name</th>
+        <th scope="col">Date</th>
+        <th scope="col">Author</th>
+        <th scope="col">Publisher</th>
+        <th scope="col">Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%for(let i = 0; i < mypurchase.length; i++) {%>
+        <tr>
+          <td><%=mypurchase[i].user_name%></td>
+          <td><%=mypurchase[i].book_name%></td>
+          <td><%=mypurchase[i].date%></td>
+          <td><%=mypurchase[i].author%></td>
+          <td><%=mypurchase[i].publisher ? mypurchase[i].publisher : "unknown"%></td>
+          <td><%=mypurchase[i].price ? mypurchase[i].price : "Free"%></td>
+        </tr>
+      <%}%>
+    </tbody>
+  </table>
 </body>
 </html>

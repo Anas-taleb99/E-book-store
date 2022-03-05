@@ -31,23 +31,27 @@
   <div class="container">
     <div class="d-flex justify-content-between mt-4 mb-4 align-items-end">
       <h3 class="mt-4">Our books!</h3>
-      <span>
-        <form method="get" action="/addbook">
-          <button type="submit" class="btn btn-success">
-            <i class="bi bi-plus"></i>
-            Book
-          </button>
-        </form>
-      </span>
+      <%if(myuser.Rule != 0 ) {%>
+        <span>
+          <form method="get" action="/addbook">
+            <button type="submit" class="btn btn-success">
+              <i class="bi bi-plus"></i>
+              Book
+            </button>
+          </form>
+        </span>
+      <%}%>
     </div>
     <div class="flex flex-wrap justify-content-between gp-10">
       <% for(let i=0; i< books.length; i++) {%>
         <div class="col-md-3 col-sm-6 item mb-4">
           <div class="card item-card card-block">
             <h4 class="item-card-title text-right">
-              <a href="/edit/<%=books[i].bookid %>">
-                <i class="bi bi-gear-fill"></i>
-              </a>
+              <%if(myuser.Rule != 0 ) {%>
+                <a href="/edit/<%=books[i].bookid %>">
+                  <i class="bi bi-gear-fill"></i>
+                </a>
+              <%}%>
             </h4>
             <img src="<%=books[i].url %>" alt="Photo of sunset">
             <h5 class="card-title  mt-3 mb-3"><%=books[i].Book_title%></h5>
@@ -56,7 +60,15 @@
             <% if (myuser.Username === "Guest") { %> 
               <button type="button" class="btn btn-secondary" disabled>Please login</button>
             <% } else if (myuser.Rule == 0) { %> 
-              <button type="button" class="btn btn-secondary">Buy</button>
+              <button 
+                type="button" 
+                class="btn btn-secondary buy"
+                data-buy-id="<%=books[i].bookid%>"
+                data-buy-name="<%=books[i].Book_title%>"
+                data-user="<%=myuser.userid%>"
+              >
+                Buy
+              </button>
             <% } else { %>
               <button 
                 type="button" 
@@ -64,7 +76,7 @@
                 data-delete-id="<%=books[i].bookid%>"
                 data-delete-name="<%=books[i].Book_title%>"
               >
-                Danger
+                Delete
               </button>
             <% } %>
           </div>
@@ -74,13 +86,26 @@
   </div>
   <div class="popup">
     <div class="pupup-section">
-      <h5>Are you sure you wnat to delete this book <span id="book-name">fff</span></h5>
+      <h5>Are you sure you wnat to buy this book <span id="book-name"></span></h5>
       <div class="popup-btn d-flex">
         <button class="btn btn-sec cancel-popup">
           cancel
         </button>
         <button class="btn btn-danger delete-event">
           delete
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="popup-buy">
+    <div class="pupup-section">
+      <h5>Are you sure you wnat to delete this book <span id="buy-book-name"></span></h5>
+      <div class="popup-btn d-flex">
+        <button class="btn btn-sec cancel-popup">
+          cancel
+        </button>
+        <button class="btn btn-success buy-event">
+          Buy
         </button>
       </div>
     </div>
