@@ -29,8 +29,8 @@ exports.uploadHandler = (req, res) => {
       if (err) return handleError(err, res);
     
       let localPath = targetPath.replace(/\\/gi, "/");
-      const sql = `INSERT INTO booksdb (Book_title, author, publisher, year_of_publication, price, url) 
-        VALUES ('${req.body.title}', '${req.body.author}', '${req.body.publisher}', '${req.body.date}', '${req.body.price}', '${localPath.split("public")[1]}')`
+      const sql = `INSERT INTO booksdb (Book_title, author, publisher, year_of_publication, price, url, type) 
+        VALUES ('${req.body.title}', '${req.body.author}', '${req.body.publisher}', '${req.body.date}', '${req.body.price}', '${localPath.split("public")[1]}', '${req.body.type}')`
     
         try {
           await new Promise((resolve, reject) => {

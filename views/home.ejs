@@ -56,7 +56,9 @@
             <img src="<%=books[i].url %>" alt="Photo of sunset">
             <h5 class="card-title  mt-3 mb-3"><%=books[i].Book_title%></h5>
             <p class="author"><%=books[i].author%></p>
-            <p class="card-text"><%=books[i].informations%></p> 
+            <p class="card-text"><%=books[i].informations%></p>
+            <p><%=books[i].type%></p> 
+            <p class="price"><%=books[i].price%> LYD</p> 
             <% if (myuser.Username === "Guest") { %> 
               <button type="button" class="btn btn-secondary" disabled>Please login</button>
             <% } else if (myuser.Rule == 0) { %> 
