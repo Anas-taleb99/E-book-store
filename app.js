@@ -47,7 +47,7 @@ app.post('/search', async (req,res)=> {
   await new Promise((resolve, reject) => {
     //SELECT title FROM pages WHERE my_col LIKE %$param1% OR another_col LIKE %$param2%;
     db.all(
-      `SELECT * FROM booksdb where Book_title LIKE '${titlesearch}%' OR author LIKE '${titlesearch}%' OR publisher LIKE '${titlesearch}%'`, 
+      `SELECT * FROM booksdb where Book_title LIKE '${titlesearch}%' OR author LIKE '${titlesearch}%' OR publisher LIKE '${titlesearch}%' OR type LIKE '${titlesearch}%'`, 
       function(err,rows){
         if(err) { 
           console.log(err);
@@ -67,7 +67,7 @@ app.post('/search', async (req,res)=> {
 app.get("/", async (req,res) => {
   //select all books
   await new Promise((resolve, reject) => {
-    db.all(`SELECT * from booksdb `, function(err,rows){
+    db.all(`SELECT * from booksdb WHERE active='1'`, function(err,rows){
       if(err) { 
         console.log(err);
       } else { 
@@ -190,7 +190,8 @@ app.post("/edit/:id", async (req, res) => {
     Book_title = '${req.body.title}', 
     author = '${req.body.author}', 
     year_of_publication = '${req.body.date}', 
-    price = '${req.body.price}'
+    price = '${req.body.price}',
+    type = '${req.body.type}'
     WHERE bookid = '${req.params.id}'
   `;
 
@@ -206,12 +207,14 @@ app.post("/edit/:id", async (req, res) => {
 })
 
 app.get("/delete/:id", async (req, res) => {
-
+  // UPDATE table_name
+  // SET column1 = value1, column2 = value2, ...
+  // WHERE condition; 
   // if user doesn't have permistion to access this link redirect him
   if (! restricTo(1, 2, 3))
     return res.redirect("/");
 
-  const sql = `DELETE FROM booksdb WHERE bookid = '${req.params.id}'`;
+  const sql = `UPDATE booksdb SET active='0' WHERE bookid = '${req.params.id}'`;
   try {
     await new Promise((resolve, reject) => {
       db.run(sql);

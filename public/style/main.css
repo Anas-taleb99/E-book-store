@@ -232,9 +232,6 @@ header button:before {
   transform: scale(1.05);
   box-shadow: 10px 10px 15px rgba(0,0,0,0.3);
 }
-.card-text{
-  height:80px;  
-}
 
 .card::before, .card::after {
   position: absolute;
@@ -258,6 +255,10 @@ header button:before {
   transform: scale3d(1, 1, 1);
 }
 
+.price {
+  font-weight: bold;
+  color: var(--main-color);
+}
 /* start popup */
 .popup, 
 .popup-buy {
